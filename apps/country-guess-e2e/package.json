@@ -1,0 +1,10 @@
+{
+  "name": "@country-guess/country-guess-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@country-guess/country-guess"
+    ]
+  }
+}
