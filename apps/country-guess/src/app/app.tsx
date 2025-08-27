@@ -30,6 +30,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h1 className="text-3xl font-bold mb-2 mt-4">Country Guess</h1>
+      <h4 className="italic text-gray-600 mb-2 mt-2">Discover geography in an interactive way: name countries and watch the map come alive!</h4>
       <div className="w-full max-w-3xl mb-4">
         <div className="flex justify-between mb-1">
           <span className="text-sm font-medium text-blue-700">Progress</span>
@@ -59,7 +60,7 @@ export default function App() {
       </div>
       {highlightedCountries.length > 0 && (
         <div className="mt-4 w-full max-w-3xl flex flex-wrap gap-2">
-          <h2 className="text-xl font-semibold mb-2">You have guessed:</h2>
+          <h2 className="text-xl font-semibold">You have guessed:</h2>
           {highlightedCountries.map((country) => (
             <span key={country} className="px-2 py-1 bg-green-200 rounded text-sm">
               {country}

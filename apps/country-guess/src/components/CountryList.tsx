@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import COUNTRIES from '../assets/countries.json';
 
 const CONTINENTS = [
@@ -13,6 +14,7 @@ const CONTINENTS = [
 const countries = COUNTRIES;
 
 export const CountryList = ({highlightedCountries}: {highlightedCountries: string[]}) => {
+  const [showAll, setShowAll] = useState(false);
   return (
     <div className="mt-8 w-full max-w-3xl">
       {CONTINENTS.map((continent) => (
@@ -22,15 +24,19 @@ export const CountryList = ({highlightedCountries}: {highlightedCountries: strin
             {countries.filter((c) => c.continent === continent).map((country) => {
                 const isHighlighted = highlightedCountries && highlightedCountries.find((c) => c.toLowerCase() === country.name.toLowerCase());
                 return (
-                  <span key={country.name}
-                        className={`px-2 py-1 rounded text-sm ${isHighlighted ? 'bg-green-200' : 'bg-gray-200 text-gray-200'}`}>
-                    {country.name}
-                  </span>
+                  <div key={country.name}
+                  style={{ minWidth: `${country.name.length * 9}px` }}
+                        className={`px-2 py-1 h-[28px] rounded text-sm ${isHighlighted ? 'bg-green-200' : 'bg-gray-200'}`}>
+                    {showAll || isHighlighted ? country.name : ''}
+                  </div>
                 );
               })}
           </div>
         </div>
       ))}
+        <button onClick={() => setShowAll(!showAll)} className="mt-2 mb-4 text-sm text-blue-500">
+        {showAll ? 'Hide not revealed countries' : 'Show all countries'}
+        </button>
     </div>
   );
 };
