@@ -19,14 +19,14 @@ export const CountryList = ({highlightedCountries}: {highlightedCountries: strin
     <div className="mt-8 w-full max-w-3xl">
       {CONTINENTS.map((continent) => (
         <div key={continent} className="mb-4">
-          <h2 className="text-xl font-semibold mb-2">{continent}</h2>
+          <h2 className="text-xl font-semibold mb-2">{continent} ({countries.filter(c => c.continent === continent).length})</h2>
           <div className="flex flex-wrap gap-2">
             {countries.filter((c) => c.continent === continent).map((country) => {
                 const isHighlighted = highlightedCountries && highlightedCountries.find((c) => c.toLowerCase() === country.name.toLowerCase());
                 return (
                   <div key={country.name}
                   style={{ minWidth: `${country.name.length * 9}px` }}
-                        className={`px-2 py-1 h-[28px] rounded text-sm ${isHighlighted ? 'bg-green-200' : 'bg-gray-200'}`}>
+                        className={`px-2 py-1 h-[28px] rounded text-center text-sm ${isHighlighted ? 'bg-green-200' : 'bg-gray-200'}`}>
                     {showAll || isHighlighted ? country.name : ''}
                   </div>
                 );
