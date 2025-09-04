@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { WorldMap } from '../components/WorldMap';
 import { CountryList } from '../components/CountryList';
+import { TopToolbar } from '../components/TopToolbar';
+import { CongratsPopup } from '../components/CongratsPopup';
+import { ResetConfirmPopup } from '../components/ResetConfirmPopup';
 import COUNTRIES from '../assets/countries.json';
 
 const countries = COUNTRIES;
@@ -14,6 +17,8 @@ export default function App() {
   const [lastFound, setLastFound] = useState<string | null>(null);
   const [showCongrats, setShowCongrats] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [multiplayer, setMultiplayer] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('highlightedCountries', JSON.stringify(highlightedCountries));
@@ -21,7 +26,7 @@ export default function App() {
 
   useEffect(() => {
     const trimmed = input.trim();
-    const countryExists = countries.find(c => c.name.toLowerCase() === trimmed.toLowerCase());
+    const countryExists = countries.find(c => c.name.toLowerCase() === trimmed.toLowerCase() || c.alias?.toLowerCase() === trimmed.toLowerCase());
     if (countryExists && !highlightedCountries.includes(countryExists.name)) {
       setHighlightedCountries([...highlightedCountries, countryExists.name]);
       setLastFound(countryExists.name);
@@ -43,26 +48,28 @@ export default function App() {
   }, [foundCount, totalCountries]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      {/* Congratulations Popup */}
-      {showCongrats && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 flex flex-col items-center">
-            <h2 className="text-3xl font-bold text-green-600 mb-4">
-              <span role="img" aria-label="party popper">🎉</span> Congratulations! <span role="img" aria-label="party popper">🎉</span>
-            </h2>
-            <p className="mb-4 text-lg text-gray-700">You have found all countries!</p>
-            <button
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              onClick={() => setShowCongrats(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative">
+      <TopToolbar
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        multiplayer={multiplayer}
+        setMultiplayer={setMultiplayer}
+      />
+
+      {showCongrats && <CongratsPopup onClose={() => setShowCongrats(false)} />}
+      {showResetConfirm && (
+        <ResetConfirmPopup
+          onConfirm={() => {
+            setHighlightedCountries([]);
+            localStorage.removeItem('highlightedCountries');
+            setShowCongrats(false);
+            setShowResetConfirm(false);
+          }}
+          onCancel={() => setShowResetConfirm(false)}
+        />
       )}
 
-      <h1 className="text-3xl font-bold mb-2 mt-4">Country Guess</h1>
+      <h1 className="text-3xl font-bold mb-2 mt-20">Country Guess</h1>
       <h4 className="italic text-gray-600 mb-2 mt-2">
         Discover geography in an interactive way: name countries and watch the map come alive!
       </h4>
@@ -111,34 +118,6 @@ export default function App() {
       >
         Reset Progress
       </button>
-      {/* Reset Confirmation Popup */}
-      {showResetConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
-            <h3 className="text-xl font-semibold mb-2">Reset Progress?</h3>
-            <p className="mb-4 text-gray-700">Are you sure you want to reset your progress? This cannot be undone.</p>
-            <div className="flex gap-4">
-              <button
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                onClick={() => {
-                  setHighlightedCountries([]);
-                  localStorage.removeItem('highlightedCountries');
-                  setShowCongrats(false);
-                  setShowResetConfirm(false);
-                }}
-              >
-                Yes, reset
-              </button>
-              <button
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                onClick={() => setShowResetConfirm(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
