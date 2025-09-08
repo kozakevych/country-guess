@@ -5,24 +5,42 @@ import { TopToolbar } from '../components/TopToolbar';
 import { CongratsPopup } from '../components/CongratsPopup';
 import { ResetConfirmPopup } from '../components/ResetConfirmPopup';
 import COUNTRIES from '../assets/countries.json';
+import io from 'socket.io-client';
 
 const countries = COUNTRIES;
+const socket = io('http://localhost:3333');
 
 export default function App() {
   const [input, setInput] = useState('');
-  const [highlightedCountries, setHighlightedCountries] = useState<string[]>(() => {
-    const saved = localStorage.getItem('highlightedCountries');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [highlightedCountries, setHighlightedCountries] = useState<string[]>([]);
+  // const [highlightedCountries, setHighlightedCountries] = useState<string[]>(() => {
+  //   const saved = localStorage.getItem('highlightedCountries');
+  //   return saved ? JSON.parse(saved) : [];
+  // });
   const [lastFound, setLastFound] = useState<string | null>(null);
   const [showCongrats, setShowCongrats] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [multiplayer, setMultiplayer] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [room, setRoom] = useState('');
+  const [playerList, setPlayerList] = useState<string[]>([]);
 
+  // useEffect(() => {
+  //   localStorage.setItem('highlightedCountries', JSON.stringify(highlightedCountries));
+  // }, [highlightedCountries]);
   useEffect(() => {
-    localStorage.setItem('highlightedCountries', JSON.stringify(highlightedCountries));
-  }, [highlightedCountries]);
+    if (multiplayer) {
+      socket.emit('guessCountry', highlightedCountries);
+    }
+    socket.on('update', (socketData) => {
+      console.log('Received update:', socketData);
+      if (playerList.length !== socketData.players.length) {
+        setPlayerList(socketData.players);
+      }
+      if (socketData.countries?.length > highlightedCountries.length) {
+        setHighlightedCountries(socketData.countries);
+      }
+    });
+  }, [multiplayer, highlightedCountries, playerList]);
 
   useEffect(() => {
     const trimmed = input.trim();
@@ -47,13 +65,19 @@ export default function App() {
     }
   }, [foundCount, totalCountries]);
 
+  const joinRoom = () => {
+      socket.emit('joinRoom');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative">
       <TopToolbar
-        menuOpen={menuOpen}
-        setMenuOpen={setMenuOpen}
+        playerList={playerList}
         multiplayer={multiplayer}
-        setMultiplayer={setMultiplayer}
+        setMultiplayer={() => {
+          setMultiplayer(!multiplayer)
+          joinRoom();
+        }}
       />
 
       {showCongrats && <CongratsPopup onClose={() => setShowCongrats(false)} />}
