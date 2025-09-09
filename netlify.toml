@@ -1,0 +1,6 @@
+[build]
+  command = "npx nx build country-guess"
+  publish = "apps/country-guess/dist/client"
+
+[build.environment]
+  NODE_VERSION = "22.19.0"
