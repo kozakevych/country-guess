@@ -13,20 +13,13 @@ const socket = io('http://localhost:3333');
 export default function App() {
   const [input, setInput] = useState('');
   const [highlightedCountries, setHighlightedCountries] = useState<string[]>([]);
-  // const [highlightedCountries, setHighlightedCountries] = useState<string[]>(() => {
-  //   const saved = localStorage.getItem('highlightedCountries');
-  //   return saved ? JSON.parse(saved) : [];
-  // });
   const [lastFound, setLastFound] = useState<string | null>(null);
   const [showCongrats, setShowCongrats] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [multiplayer, setMultiplayer] = useState(false);
-  // const [room, setRoom] = useState('');
   const [playerList, setPlayerList] = useState<string[]>([]);
+  const [playerMenuOpen, setPlayerMenuOpen] = useState(false);
 
-  // useEffect(() => {
-  //   localStorage.setItem('highlightedCountries', JSON.stringify(highlightedCountries));
-  // }, [highlightedCountries]);
   useEffect(() => {
     if (multiplayer) {
       socket.emit('guessCountry', highlightedCountries);
@@ -68,15 +61,21 @@ export default function App() {
   const joinRoom = () => {
       socket.emit('joinRoom');
   };
+  const leaveRoom = () => {
+      socket.emit('leaveRoom');
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative">
       <TopToolbar
+        playerMenuOpen={playerMenuOpen}
+        setPlayerMenuOpen={() => setPlayerMenuOpen(!playerMenuOpen)}
         playerList={playerList}
         multiplayer={multiplayer}
         setMultiplayer={() => {
-          setMultiplayer(!multiplayer)
-          joinRoom();
+          setHighlightedCountries([]);
+          setMultiplayer(!multiplayer);
+          !multiplayer ? joinRoom() : leaveRoom();
         }}
       />
 
@@ -136,12 +135,14 @@ export default function App() {
       )}
       <CountryList highlightedCountries={highlightedCountries} />
 
-      <button
-        className="m-3 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-        onClick={() => setShowResetConfirm(true)}
-      >
-        Reset Progress
-      </button>
+      {!multiplayer && (
+        <button
+          className="m-3 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          onClick={() => setShowResetConfirm(true)}
+        >
+          Reset Progress
+        </button>
+      )}
     </div>
   );
 }
