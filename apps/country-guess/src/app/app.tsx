@@ -8,7 +8,11 @@ import COUNTRIES from '../assets/countries.json';
 import io from 'socket.io-client';
 
 const countries = COUNTRIES;
-const socket = io('http://localhost:3333');
+const socket = io(
+  process.env.NODE_ENV === 'production'
+    ? 'https://country-guess-3dte.onrender.com'
+    : 'http://localhost:3333'
+);
 
 export default function App() {
   const [input, setInput] = useState('');
@@ -91,7 +95,10 @@ export default function App() {
         />
       )}
 
-      <h1 className="text-3xl font-bold mb-2 mt-10">Country Guess</h1>
+      <img className="mt-2 mb-4" src="../public/country-guess-logo-2.png" alt="Country Guess Logo" width="300" />
+      <h1 className="text-2xl font-bold mb-2">
+        How Many Countries Can You Name?
+      </h1>
       <h4 className="italic text-gray-600 mb-2 mt-2">
         Discover geography in an interactive way: name countries and watch the map come alive!
       </h4>
