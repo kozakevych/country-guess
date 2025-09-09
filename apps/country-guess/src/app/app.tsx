@@ -95,7 +95,7 @@ export default function App() {
         />
       )}
 
-      <img className="mt-2 mb-4" src="../public/country-guess-logo-2.png" alt="Country Guess Logo" width="300" />
+      <img className="mt-2 mb-4" src="./country-guess-logo-2.png" alt="Country Guess Logo" width="300" />
       <h1 className="text-2xl font-bold mb-2">
         How Many Countries Can You Name?
       </h1>
