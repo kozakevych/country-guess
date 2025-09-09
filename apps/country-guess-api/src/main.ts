@@ -7,7 +7,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production'
-      ? 'https://kozkavych-country-guess.netlify.app/'
+      ? 'https://kozakevych-country-guess.netlify.app'
       : 'http://localhost:4200',
     methods: ['GET', 'POST']
   }
