@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build:country-guess": "nx build country-guess"
+  },
   "dependencies": {
     "axios": "^1.6.0",
     "express": "^4.21.2",
