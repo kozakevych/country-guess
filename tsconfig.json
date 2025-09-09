@@ -4,13 +4,7 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/country-guess-e2e"
-    },
-    {
       "path": "./apps/country-guess"
-    },
-    {
-      "path": "./apps/country-guess-api-e2e"
     },
     {
       "path": "./apps/country-guess-api"

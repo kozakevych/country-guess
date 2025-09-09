@@ -25,7 +25,6 @@ export default function App() {
       socket.emit('guessCountry', highlightedCountries);
     }
     socket.on('update', (socketData) => {
-      console.log('Received update:', socketData);
       if (playerList.length !== socketData.players.length) {
         setPlayerList(socketData.players);
       }
@@ -66,7 +65,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative p-3">
       <TopToolbar
         playerMenuOpen={playerMenuOpen}
         setPlayerMenuOpen={() => setPlayerMenuOpen(!playerMenuOpen)}
@@ -92,7 +91,7 @@ export default function App() {
         />
       )}
 
-      <h1 className="text-3xl font-bold mb-2 mt-20">Country Guess</h1>
+      <h1 className="text-3xl font-bold mb-2 mt-10">Country Guess</h1>
       <h4 className="italic text-gray-600 mb-2 mt-2">
         Discover geography in an interactive way: name countries and watch the map come alive!
       </h4>
